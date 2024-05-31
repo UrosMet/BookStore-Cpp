@@ -1,0 +1,4 @@
+Broj transakcije: 1
+Kupac: Uros Mirkovic 24 godina, Broj Telefona: 065322323
+Kupio je knjigu: Aperkat po ceni od 774.27 Dinara
+---------------------------------------------------------
