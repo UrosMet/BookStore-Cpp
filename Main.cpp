@@ -33,47 +33,71 @@ int main() {
 
     unique_ptr<Kupac> kupac = make_unique<Kupac>();
 
-    try {
-        cout << "\nUnesite vase ime : ";
-        cin >> imeKupca;
-        kupac->setIme(imeKupca);
-        cout << endl;
 
-        if (Util::samoSlova(imeKupca) == 0) {
-            throw ImePrezimeExc();
+    while (true) {
+        try {
+            cout << "\nUnesite vase ime : ";
+            cin >> imeKupca;
+            kupac->setIme(imeKupca);
+            cout << endl;
+
+            if (Util::samoSlova(imeKupca) == 0) {
+                throw ImePrezimeExc();
+            }
+
+            cout << "Unesite vase prezime : ";
+            cin >> prezimeKupca;
+            kupac->setPrezime(prezimeKupca);
+            cout << endl;
+
+            if (Util::samoSlova(prezimeKupca) == 0) {
+                throw ImePrezimeExc();
+            }
+
+            break;
         }
-
-        cout << "Unesite vase prezime : ";
-        cin >> prezimeKupca;
-        kupac->setPrezime(prezimeKupca);
-        cout << endl;
-
-        if (Util::samoSlova(prezimeKupca) == 0) {
-            throw ImePrezimeExc();
-        }
-    }
-    catch (const exception& e) {
-        cout << e.what() << endl;
-        return EXIT_FAILURE;
-    }
-
-    cout << "Unesite Broj godina : ";
-    cin >> godineKupca;
-    kupac->setGodine(godineKupca);
-    cout << endl;
-
-    try {
-        cout << "Unesite Broj telefona : ";
-        cin >> brojTelefonaKupca;
-        kupac->setBrojTelefona(brojTelefonaKupca);
-        cout << endl;
-        if (Util::samoBrojevi(brojTelefonaKupca) == 0) {
-            throw BrojTelefonaExc();
+        catch (const exception& e) {
+            cout << e.what() << endl;
+            cout << "Molimo vas da ponovo unesete ime i prezime." << endl;
         }
     }
-    catch (const exception& e) {
-        cout << e.what() << endl;
-        return EXIT_FAILURE;
+
+ 
+    while (true) {
+        cout << "Unesite Broj godina : ";
+        cin >> godineKupca;
+
+        if (cin.fail() || godineKupca <= 0) {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << "Neispravan unos. Molimo vas da ponovo unesete broj godina." << endl;
+        }
+        else {
+            kupac->setGodine(godineKupca);
+            cout << endl;
+            break;
+        }
+    }
+
+
+
+    while (true) {
+        try {
+            cout << "Unesite Broj telefona : ";
+            cin >> brojTelefonaKupca;
+            kupac->setBrojTelefona(brojTelefonaKupca);
+            cout << endl;
+
+            if (Util::samoBrojevi(brojTelefonaKupca) == 0) {
+                throw BrojTelefonaExc();
+            }
+
+            break;
+        }
+        catch (const exception& e) {
+            cout << e.what() << endl;
+            cout << "Molimo vas da ponovo unesete broj telefona." << endl;
+        }
     }
 
     cout << "Da li zelite da kupite knjigu? ";
@@ -82,23 +106,33 @@ int main() {
 
     if (potvrdaKupovine == "da" || potvrdaKupovine == "DA" || potvrdaKupovine == "Da") {
         do {
-            outfile.open("transakcije.txt", ios_base::trunc);
-            cout << "Unesite sifru knjige koju zelite da kupite ";
-            cin >> sifra;
-            cout << endl;
-            float racun = Knjiga::kupiKnjigu(godineKupca, sifra);
-            cout << "Cena knjige " << Knjiga::imeKnjigePoSifri(sifra) << " je " << racun << "RSD" << endl;
+            while (true) {
+                cout << "Unesite sifru knjige koju zelite da kupite ";
+                cin >> sifra;
+                cout << endl;
 
-            cout << "Da li zelite da kupite ovu knjigu? " << endl;
-            cin >> potvrdaTransakcije;
-            if (potvrdaTransakcije == "da" || potvrdaTransakcije == "Da" || potvrdaTransakcije == "DA") {
-                outfile << "Broj transakcije: " << brojTransakcije << endl;
-                outfile << "Kupac: " << kupac->getIme() << " " << kupac->getPrezime() << " " << kupac->getGodine() << " godina, Broj Telefona: " << kupac->getBrojTelefona() << endl;
-                outfile << "Kupio je knjigu: " << Knjiga::imeKnjigePoSifri(sifra) << " po ceni od " << racun << " Dinara" << endl;
-                outfile << "---------------------------------------------------------" << endl;
-                brojTransakcije++;
+                float racun = Knjiga::kupiKnjigu(godineKupca, sifra);
+                if (racun == 0.0f) {
+                    cout << "Ne postoji knjiga sa unetom sifrom. Molimo unesite ponovo." << endl;
+                }
+                else {
+                    cout << "Cena knjige " << Knjiga::imeKnjigePoSifri(sifra) << " je " << racun << "RSD" << endl;
+
+                    cout << "Da li zelite da kupite ovu knjigu? " << endl;
+                    cin >> potvrdaTransakcije;
+                    if (potvrdaTransakcije == "da" || potvrdaTransakcije == "Da" || potvrdaTransakcije == "DA") {
+                        outfile.open("transakcije.txt", ios_base::trunc);
+                        outfile << "Broj transakcije: " << brojTransakcije << endl;
+                        outfile << "Kupac: " << kupac->getIme() << " " << kupac->getPrezime() << " " << kupac->getGodine() << " godina, Broj Telefona: " << kupac->getBrojTelefona() << endl;
+                        outfile << "Kupio je knjigu: " << Knjiga::imeKnjigePoSifri(sifra) << " po ceni od " << racun << " Dinara" << endl;
+                        outfile << "---------------------------------------------------------" << endl;
+                        brojTransakcije++;
+                        outfile.close();
+                    }
+                    break;
+                }
             }
-            outfile.close();
+
             cout << "Da li zelite da nastavite kupovinu ";
             cin >> nastavakKupovine;
             cout << endl;
