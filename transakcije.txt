@@ -1,4 +1,4 @@
 Broj transakcije: 1
-Kupac: Uros Mirkovic 12 godina, Broj Telefona: 32131
-Kupio je knjigu: Ognjena_kapija po ceni od 2100 Dinara
+Kupac: Uros Mirkovic 23 godina, Broj Telefona: 342342342
+Kupio je knjigu: Kapije_Atine po ceni od 2340 Dinara
 ---------------------------------------------------------
